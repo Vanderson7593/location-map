@@ -1,4 +1,4 @@
-This is a simple address to map app built with NextJs!
+This is a simple address to map app built with NextJs + Google places API
 
 ## Screenshots
 
