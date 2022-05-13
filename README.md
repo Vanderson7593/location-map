@@ -1,5 +1,9 @@
 This is a simple address to map app built with NextJs!
 
+## Screenshots
+
+<img height=420 width="600" src="./public/screenshot.png"/>
+
 ## Installation
 
 First, clone the repo and then, use the package manager yarn or npm to install dependencies:

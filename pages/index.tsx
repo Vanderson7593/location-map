@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Draw it - Form</title>
+        <title>Location to map</title>
       </Head>
 
       <main className={styles.main}>
