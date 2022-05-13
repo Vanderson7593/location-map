@@ -2,7 +2,7 @@ This is a simple address to map app built with NextJs + Google places API
 
 ## Screenshots
 
-<img height=420 width="600" src="./public/screenshot.png"/>
+<img height=420 width="800" src="./public/screenshot.png"/>
 
 ## Installation
 
