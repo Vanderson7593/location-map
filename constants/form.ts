@@ -3,5 +3,5 @@ export enum EForm {
   Address = 'address',
   CPF = 'cpf',
   Email = 'email',
-  Message = 'message'
+  Message = 'message',
 }

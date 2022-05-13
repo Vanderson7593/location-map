@@ -7,10 +7,13 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setAddress } from "../../../redux/app/app.thunks";
+import { PlaceType } from "./types";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBxTg_vL0S4W_ew3DVVT0Gf_lXpci5iQ7M";
 
-function loadScript(src: string, position: HTMLElement | null, id: string) {
+const loadScript = (src: string, position: HTMLElement | null, id: string) => {
   if (!position) {
     return;
   }
@@ -20,25 +23,13 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
   script.setAttribute("id", id);
   script.src = src;
   position.appendChild(script);
-}
+};
 
 const autocompleteService = { current: null };
-
-interface MainTextMatchedSubstrings {
-  offset: number;
-  length: number;
-}
-interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-  main_text_matched_substrings: readonly MainTextMatchedSubstrings[];
-}
-interface PlaceType {
-  description: string;
-  structured_formatting: StructuredFormatting;
-}
+const geoLocationService = { current: null };
 
 const AutoComplete: FC = () => {
+  const dispatch = useAppDispatch();
   const [value, setValue] = useState<PlaceType | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<readonly PlaceType[]>([]);
@@ -73,6 +64,18 @@ const AutoComplete: FC = () => {
     []
   );
 
+  const getLatLng = async (placeId: string) => {
+    if (!geoLocationService.current) return { lat: 0, lng: 0 };
+    const { results } = await (geoLocationService.current as any).geocode({
+      placeId: placeId,
+    });
+    const location = results[0].geometry.location;
+    return {
+      lat: location.lat() as number,
+      lng: location.lng() as number,
+    };
+  };
+
   useEffect(() => {
     let active = true;
 
@@ -80,6 +83,7 @@ const AutoComplete: FC = () => {
       autocompleteService.current = new (
         window as any
       ).google.maps.places.AutocompleteService();
+      geoLocationService.current = new (window as any).google.maps.Geocoder();
     }
     if (!autocompleteService.current) {
       return undefined;
@@ -113,8 +117,7 @@ const AutoComplete: FC = () => {
 
   return (
     <MuiAutocomplete
-      // id="google-map-demo"
-      sx={{ width: 300 }}
+      sx={{ width: 600 }}
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
@@ -124,7 +127,16 @@ const AutoComplete: FC = () => {
       includeInputInList
       filterSelectedOptions
       value={value}
-      onChange={(event: any, newValue: PlaceType | null) => {
+      onChange={async (event: any, newValue: PlaceType | null) => {
+        if (newValue) {
+          const { lat, lng } = await getLatLng(newValue?.place_id);
+          dispatch(
+            setAddress({
+              coordinates: [lat, lng],
+              fullAddress: newValue.description,
+            })
+          );
+        }
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
       }}
