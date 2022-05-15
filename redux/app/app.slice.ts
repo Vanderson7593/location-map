@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppState, IAddress } from './app.types'
+import { AppState } from './app.types'
+import { IAddress } from "@types";
 
 export const initialState: AppState = {
-  address: { coordinates: null, fullAddress: null },
+  address: null,
 }
 
 export const appSlice = createSlice({

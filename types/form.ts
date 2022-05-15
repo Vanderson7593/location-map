@@ -1,5 +1,5 @@
-import { EForm } from "constants/form";
-import { IAddress } from "redux/app/app.types";
+import { EForm } from "@constants";
+import { IAddress } from "@types";
 
 export interface IForm {
   [EForm.Message]: string

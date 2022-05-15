@@ -6,6 +6,7 @@ import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import dynamic from "next/dynamic";
 import { Box, Grid, Typography } from "@mui/material";
 import AutoComplete from "components/atom/autocomplete";
+import { Form } from "@components";
 
 const MapWithNoSSR = dynamic(() => import("../components/map"), {
   ssr: false,
@@ -26,9 +27,9 @@ const Home: NextPage = () => {
           </Typography>
         </Box>
 
-        <Grid container spacing={5} direction="column" alignItems="center">
+        <Grid container spacing={5} justifyContent="center">
           <Grid item>
-            <AutoComplete />
+            <Form />
           </Grid>
           <Grid item>
             <MapWithNoSSR />

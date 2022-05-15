@@ -10,8 +10,11 @@ import throttle from "lodash/throttle";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setAddress } from "../../../redux/app/app.thunks";
 import { PlaceType } from "./types";
+import { extractAddress } from "utils/extract-address";
+import { IAddress } from "@types";
+import { GOOGLE_API_KEY } from "constants/env";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyBxTg_vL0S4W_ew3DVVT0Gf_lXpci5iQ7M";
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API;
 
 const loadScript = (src: string, position: HTMLElement | null, id: string) => {
   if (!position) {
@@ -28,7 +31,7 @@ const loadScript = (src: string, position: HTMLElement | null, id: string) => {
 const autocompleteService = { current: null };
 const geoLocationService = { current: null };
 
-const AutoComplete: FC = () => {
+const AutoComplete: FC<{ G_API_KEY: string }> = ({ G_API_KEY }) => {
   const dispatch = useAppDispatch();
   const [value, setValue] = useState<PlaceType | null>(null);
   const [inputValue, setInputValue] = useState("");
@@ -38,7 +41,7 @@ const AutoComplete: FC = () => {
   if (typeof window !== "undefined" && !loaded.current) {
     if (!document.querySelector("#google-maps")) {
       loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
+        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`,
         document.querySelector("head"),
         "google-maps"
       );
@@ -64,15 +67,33 @@ const AutoComplete: FC = () => {
     []
   );
 
-  const getLatLng = async (placeId: string) => {
+  const getPlace = async (placeId: string) => {
     if (!geoLocationService.current) return { lat: 0, lng: 0 };
     const { results } = await (geoLocationService.current as any).geocode({
       placeId: placeId,
     });
+
     const location = results[0].geometry.location;
+
+    const {
+      postal_code: postalCode,
+      locality: city,
+      administrative_area_level_1: state,
+      sublocality_level_1: district,
+    } = extractAddress(results[0].address_components, [
+      "postal_code",
+      "locality",
+      "administrative_area_level_1",
+      "sublocality_level_1",
+    ]);
+
     return {
       lat: location.lat() as number,
       lng: location.lng() as number,
+      postalCode,
+      city,
+      state,
+      district,
     };
   };
 
@@ -129,12 +150,23 @@ const AutoComplete: FC = () => {
       value={value}
       onChange={async (event: any, newValue: PlaceType | null) => {
         if (newValue) {
-          const { lat, lng } = await getLatLng(newValue?.place_id);
+          const { lat, lng, city, state, district, postalCode } =
+            await getPlace(newValue?.place_id);
           dispatch(
             setAddress({
               coordinates: [lat, lng],
               fullAddress: newValue.description,
+              city,
+              state,
+              district,
+              postalCode,
             })
+          );
+        } else {
+          dispatch(
+            setAddress({
+              coordinates: [0, 0],
+            } as IAddress)
           );
         }
         setOptions(newValue ? [newValue, ...options] : options);

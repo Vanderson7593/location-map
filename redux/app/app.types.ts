@@ -1,7 +1,4 @@
-export interface IAddress {
-  coordinates: number[] | null
-  fullAddress: string | null
-}
+import { IAddress } from "@types";
 
 export interface AppState {
   address: IAddress | null

@@ -1,10 +1,10 @@
 import { EAddress } from "constants/address";
 
 export interface IAddress {
-  [EAddress.CEP]: string
-  [EAddress.City]: string
-  [EAddress.District]: string
-  [EAddress.State]: string
-  [EAddress.Street]: string
+  [EAddress.PostalCode]: string | undefined
+  [EAddress.City]: string | undefined
+  [EAddress.District]: string | undefined
+  [EAddress.State]: string | undefined
   [EAddress.Coordinates]: number[]
+  [EAddress.FullAddress]: string | undefined
 }
