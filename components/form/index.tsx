@@ -18,13 +18,14 @@ const INITIAL_VALUES = {
 };
 
 const Form: FC = () => {
-  const { address } = useAppSelector(appSelector);
+  const { address, shapes } = useAppSelector(appSelector);
 
   const handleSubmit = (values: Omit<IForm, "address">) => {
     alert("Open console to see the form data!");
     console.log({
       ...values,
       address,
+      shapes: shapes?.map((x) => x.coordinates),
     });
     /* SEND DATA TO API
     try {
@@ -49,7 +50,6 @@ const Form: FC = () => {
       .email("E-mail inválido.")
       .required("O campo é obrigatório."),
     message: yup.string().required("Obrigatório"),
-    address: yup.string().required("Obrigatório"),
   });
 
   return (

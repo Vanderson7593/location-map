@@ -7,3 +7,8 @@ export enum EAddress {
   Coordinates = 'coordinates',
   FullAddress = 'fullAddress'
 }
+
+export enum ECoordinates {
+  Lat = 'lat',
+  Lng = 'lng'
+}

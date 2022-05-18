@@ -154,7 +154,10 @@ const AutoComplete: FC<{ G_API_KEY: string }> = ({ G_API_KEY }) => {
             await getPlace(newValue?.place_id);
           dispatch(
             setAddress({
-              coordinates: [lat, lng],
+              coordinates: {
+                lat,
+                lng,
+              },
               fullAddress: newValue.description,
               city,
               state,
@@ -163,11 +166,7 @@ const AutoComplete: FC<{ G_API_KEY: string }> = ({ G_API_KEY }) => {
             })
           );
         } else {
-          dispatch(
-            setAddress({
-              coordinates: [0, 0],
-            } as IAddress)
-          );
+          dispatch(setAddress(null));
         }
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);

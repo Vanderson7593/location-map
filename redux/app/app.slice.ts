@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from './app.types'
-import { IAddress } from "@types";
+import { IAddress, ICoordinates, IMapShape } from "@types";
 
 export const initialState: AppState = {
   address: null,
+  shapes: null
 }
 
 export const appSlice = createSlice({
@@ -13,9 +14,12 @@ export const appSlice = createSlice({
     setAddress: (state, { payload }: PayloadAction<IAddress | null>) => {
       state.address = payload
     },
+    setShapes: (state, { payload }: PayloadAction<IMapShape[]>) => {
+      state.shapes = payload
+    },
   },
 })
 
-export const { setAddress } = appSlice.actions
+export const { setAddress, setShapes } = appSlice.actions
 
 export default appSlice.reducer
