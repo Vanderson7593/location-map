@@ -1,10 +1,10 @@
 This is a simple address to map app built with NextJs + Google places API
 
-Run on your browser: https://location-map.vercel.app/
+Run on your browser: https://location-map-all-features.vercel.app/
 
 ## Screenshots
 
-<img height=420 width="600" src="./public/screenshot.png"/>
+<img height="500" width="100%" src="./public/all-features.png"/>
 
 ## Installation
 
